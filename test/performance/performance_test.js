@@ -4,7 +4,7 @@
 'use strict';
 
 (function() {
-    var count = 10000, indexes = [], deletions = [], gArray = new GJS.Graph(), i;
+    var count = 10000, indexes = [], deletions = [], i;
     var regular = count - 1, double = count * 2 -1;
     for (i = 0; i < count*2; i++) {
         indexes.push([Math.floor(Math.random()*regular), Math.floor(Math.random()*regular)]);
@@ -12,24 +12,48 @@
     for (i = 0; i < count; i++) {
         deletions.push(Math.floor(Math.random()*double));
     }
-    module("Array-based graph");
 
-    test("Insertion Performance", function() {
+    var insertionPerformance = function(g) {
+        console.log(g.container instanceof GJS.ArrayGraphContainer);
         expect(0);
         var i;
         for (i = 0; i < count; i++) {
-            gArray.addNode(new GJS.Node());
+            g.addNode(new GJS.Node());
         }
         for (i = 0; i < count*2; i++) {
             var index = indexes[i];
-            gArray.addEdge(new GJS.Edge(gArray.nodes[index[0]], gArray.nodes[index[1]]));
+            g.addEdge(new GJS.Edge(g.nodes[index[0]], g.nodes[index[1]]));
         }
-    });
+    };
 
-    test("Deletion Performance", function() {
+    var deletionPerformance = function(g) {
         expect(0);
         for (var i = 0; i < count; i++) {
-            gArray.removeEdge(gArray.edges[deletions[i]]);
+            g.removeEdge(g.edges[deletions[i]]);
         }
-    });
+    };
+
+    module("Array based graph");
+    (function() {
+        var g = new GJS.Graph(GJS.ArrayGraphContainer);
+        test("Insertion Performance", function() {
+            insertionPerformance(g);
+        });
+        test("Deletion Performance", function() {
+            deletionPerformance(g);
+        });
+    })();
+
+    if (GJS.Misc.isMapSupported()) {
+        module("ES6 Map based graph");
+        (function() {
+            var g = new GJS.Graph(GJS.MapGraphContainer);
+            test("Insertion Performance", function() {
+                insertionPerformance(g);
+            });
+            test("Deletion Performance", function() {
+                deletionPerformance(g);
+            });
+        })();
+    }
 })();
