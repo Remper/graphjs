@@ -21,7 +21,7 @@ module.exports = function(grunt) {
                 stripBanners: true
             },
             dist: {
-                src: ['src/graph.js'],
+                src: ['src/core.js', 'graph/*.js'],
                 dest: 'dist/<%= pkg.name %>.min.js'
             }
         },
